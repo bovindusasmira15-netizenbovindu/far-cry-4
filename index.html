@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Far Cry 4 - Welcome to Kyrat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-purple: #1a0b2e;
+            --deep-blue: #0f172a;
+            --neon-orange: #ff6b35;
+            --glass-bg: rgba(20, 10, 40, 0.6);
+            --glass-border: rgba(212, 175, 55, 0.2);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0b2e 50%, #0f172a 100%);
+            color: #fff;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 4px;
+        }
+
+        /* Fog Animation Background */
+        .fog-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .fog-img {
+            position: absolute;
+            height: 100vh;
+            width: 300vw;
+            z-index: 1;
+            opacity: 0.3;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><filter id="fog"><feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="5" /><feColorMatrix type="saturate" values="0" /><feComponentTransfer><feFuncA type="linear" slope="0.4" /></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(%23fog)" opacity="0.8"/></svg>') repeat-x;
+            animation: fogMove 60s linear infinite;
+        }
+
+        @keyframes fogMove {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-200vw, 0, 0); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-gold), #fff, var(--primary-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gold);
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--primary-gold);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, rgba(26, 11, 46, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%230f172a"/><stop offset="50%" style="stop-color:%231a0b2e"/><stop offset="100%" style="stop-color:%230a0a0a"/></linearGradient></defs><rect fill="url(%23sky)" width="1920" height="1080"/><path fill="%231a0b2e" opacity="0.5" d="M0 800 Q 480 600 960 800 T 1920 800 L 1920 1080 L 0 1080 Z"/></svg>');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            padding: 20px;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--primary-gold);
+            margin-bottom: 20px;
+            opacity: 0.9;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 30px;
+            background: linear-gradient(180deg, #fff 0%, var(--primary-gold) 50%, #ff6b35 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.3));
+            letter-spacing: -2px;
+            position: relative;
+        }
+
+        .hero-title::after {
+            content: 'FAR CRY 4';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(255, 107, 53, 0.3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: blur(10px);
+            z-index: -1;
+        }
+
+        .hero-tagline {
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            margin-bottom: 50px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 20px 60px;
+            background: linear-gradient(135deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            border: 2px solid var(--primary-gold);
+            color: var(--primary-gold);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover {
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.6), inset 0 0 30px rgba(212, 175, 55, 0.2);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Parallax Mountains */
+        .mountains {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #0a0a0a 0%, transparent 100%);
+            z-index: 1;
+        }
+
+        /* Ajay Ghale Spotlight Section */
+        .spotlight-section {
+            padding: 150px 50px;
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0.9) 0%, rgba(26, 11, 46, 0.6) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spotlight-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .spotlight-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212, 175, 55, 0.2);
+            transform: perspective(1000px) rotateY(-5deg);
+            transition: transform 0.5s;
+        }
+
+        .spotlight-image:hover {
+            transform: perspective(1000px) rotateY(0deg) scale(1.02);
+        }
+
+        .spotlight-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: contrast(1.1) saturate(1.2);
+        }
+
+        .spotlight-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, transparent 50%, rgba(255, 107, 53, 0.2) 100%);
+            pointer-events: none;
+        }
+
+        .spotlight-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--primary-gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .spotlight-role {
+            font-size: 1.3rem;
+            color: var(--neon-orange);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .spotlight-description {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+        }
+
+        /* Character Gallery */
+        .characters-section {
+            padding: 150px 50px;
+            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff, var(--primary-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .characters-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .character-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .character-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .character-card:hover::before {
+            opacity: 1;
+        }
+
+        .character-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            object-position: top;
+            border-bottom: 2px solid var(--glass-border);
+            transition: transform 0.5s;
+        }
+
+        .character-card:hover .character-image {
+            transform: scale(1.1);
+        }
+
+        .character-info {
+            padding: 30px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.9), transparent);
+        }
+
+        .character-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .character-role {
+            color: var(--neon-orange);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .character-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .character-faction {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .faction-golden {
+            color: var(--primary-gold);
+            border-color: var(--primary-gold);
+        }
+
+        .faction-royal {
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .faction-neutral {
+            color: #4ecdc4;
+            border-color: #4ecdc4;
+        }
+
+        /* Story Section */
+        .story-section {
+            padding: 150px 50px;
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(26, 11, 46, 0.8) 100%);
+            position: relative;
+        }
+
+        .story-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .story-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: var(--primary-gold);
+        }
+
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+        }
+
+        .story-highlight {
+            color: var(--neon-orange);
+            font-weight: 600;
+        }
+
+        .story-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .story-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Weapons Section */
+        .weapons-section {
+            padding: 150px 50px;
+            background: radial-gradient(ellipse at center, rgba(20, 10, 40, 0.9) 0%, #0a0a0a 100%);
+        }
+
+        .weapons-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .weapon-card {
+            background: linear-gradient(135deg, rgba(20, 20, 30, 0.8), rgba(10, 10, 10, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .weapon-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .weapon-card:hover::before {
+            opacity: 1;
+        }
+
+        .weapon-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+        }
+
+        .weapon-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .weapon-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-gold);
+        }
+
+        .weapon-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .weapon-stat {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-orange), var(--primary-gold));
+            border-radius: 2px;
+            transition: width 1s ease-out;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 150px 50px;
+            background: #0a0a0a;
+        }
+
+        .gallery-grid {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .gallery-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .gallery-item:hover {
+            border-color: var(--primary-gold);
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        /* Footer / Buy Section */
+        .buy-section {
+            padding: 150px 50px;
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0.9) 0%, rgba(26, 11, 46, 1) 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .buy-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .buy-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+        }
+
+        .platforms {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .platform {
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .platform:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+        }
+
+        .buy-button {
+            display: inline-block;
+            padding: 25px 80px;
+            background: linear-gradient(135deg, var(--neon-orange), #ff8c42);
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(255, 107, 53, 0.4);
+            animation: pulse 2s infinite;
+            z-index: 2;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 10px 40px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 10px 60px rgba(255, 107, 53, 0.6), 0 0 40px rgba(255, 107, 53, 0.3); }
+        }
+
+        .buy-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 5rem;
+            }
+            .spotlight-container,
+            .story-container {
+                grid-template-columns: 1fr;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .gallery-item:nth-child(1) {
+                grid-column: span 2;
+                grid-row: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            .section-title {
+                font-size: 2.5rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery-item:nth-child(1) {
+                grid-column: span 1;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0a;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-gold);
+            animation: loadingPulse 1.5s infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-text">LOADING KYRAT...</div>
+    </div>
+
+    <!-- Fog Effect -->
+    <div class="fog-container">
+        <div class="fog-img"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo">Far Cry 4</div>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#spotlight">Ajay Ghale</a></li>
+            <li><a href="#characters">Characters</a></li>
+            <li><a href="#story">Story</a></li>
+            <li><a href="#weapons">Weapons</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#buy">Buy Now</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="mountains"></div>
+        <div class="hero-content">
+            <div class="hero-subtitle">Welcome to Kyrat</div>
+            <h1 class="hero-title">FAR CRY 4</h1>
+            <p class="hero-tagline">Every Second is a Story</p>
+            <a href="#buy" class="cta-button">Enter the War</a>
+        </div>
+    </section>
+
+    <!-- Ajay Ghale Spotlight -->
+    <section class="spotlight-section" id="spotlight">
+        <div class="spotlight-container">
+            <div class="spotlight-image fade-in">
+                <img src="https://static.wikia.nocookie.net/farcry/images/3/39/Far_Cry_4_Ajay_Ghale.png/revision/latest?cb=20141117234257" alt="Ajay Ghale - The Protagonist">
+            </div>
+            <div class="spotlight-content fade-in">
+                <h2>Ajay Ghale</h2>
+                <div class="spotlight-role">The Protagonist • Son of Mohan Ghale</div>
+                <p class="spotlight-description">
+                    Ajay Ghale returns to his homeland of Kyrat to fulfill his mother's dying wish: to scatter her ashes in the mystical valley of Lakshmana. Thrust into a brutal civil war between the tyrannical King Pagan Min and the rebellious Golden Path, Ajay must navigate a world of ancient traditions, modern warfare, and moral ambiguity. His journey will define the future of Kyrat and uncover the truth about his family's legacy.
+                </p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">26</div>
+                        <div class="stat-label">Age</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">Kyrat</div>
+                        <div class="stat-label">Origin</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">Golden</div>
+                        <div class="stat-label">Path</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Character Gallery -->
+    <section class="characters-section" id="characters">
+        <div class="section-header fade-in">
+            <h2 class="section-title">The Faces of War</h2>
+            <p class="section-subtitle">Meet the key players in Kyrat's revolution</p>
+        </div>
+        
+        <div class="characters-grid">
+            <!-- Pagan Min -->
+            <div class="character-card fade-in">
+                <span class="character-faction faction-royal">Royal Army</span>
+                <img src="https://assets2.ignimgs.com/2014/11/18/farcry40521141280jpg-dcfab91280wjpg-89c2bb_160w.jpg?width=1280&format=jpg&auto=webp&quality=80" alt="Pagan Min" class="character-image">
+                <div class="character-info">
+                    <h3 class="character-name">Pagan Min</h3>
+                    <div class="character-role">King of Kyrat • Antagonist</div>
+                    <p class="character-description">The charismatic and brutal dictator of Kyrat. A Hong Kong crime boss who seized control of the Himalayan nation, Pagan Min rules with an iron fist and eccentric flair. His complex relationship with Ajay's family hides dark secrets.</p>
+                </div>
+            </div>
+
+            <!-- Amita -->
+            <div class="character-card fade-in">
+                <span class="character-faction faction-golden">Golden Path</span>
+                <img src="https://static.wikia.nocookie.net/farcry/images/3/37/Amitaconcept2.jpg/revision/latest/scale-to-width-down/250?cb=20141126122056" alt="Amita" class="character-image">
+                <div class="character-info">
+                    <h3 class="character-name">Amita</h3>
+                    <div class="character-role">Golden Path Leader • Rebel Commander</div>
+                    <p class="character-description">A pragmatic and ruthless leader of the Golden Path rebellion. Amita believes in using any means necessary to free Kyrat, including drug trade and forced recruitment. She represents the progressive, modernizing force in the civil war.</p>
+                </div>
+            </div>
+
+            <!-- Sabal -->
+            <div class="character-card fade-in">
+                <span class="character-faction faction-golden">Golden Path</span>
+                <img src="https://static.wikia.nocookie.net/farcry/images/0/0c/Amitaconcept1.jpg/revision/latest?cb=20141126122040" alt="Sabal" class="character-image" style="filter: hue-rotate(180deg) saturate(0.5);">
+                <div class="character-info">
+                    <h3 class="character-name">Sabal</h3>
+                    <div class="character-role">Golden Path Leader • Traditionalist</div>
+                    <p class="character-description">The conservative co-leader of the Golden Path who fights to preserve Kyrat's ancient traditions and religious values. A devout follower of the old ways, Sabal clashes with Amita's modern methods while sharing the goal of liberation.</p>
+                </div>
+            </div>
+
+            <!-- Bhadra -->
+            <div class="character-card fade-in">
+                <span class="character-faction faction-neutral">Tarun Matara</span>
+                <img src="https://static.wikia.nocookie.net/farcry/images/d/dd/Bhadraconcept1.jpg/revision/latest?cb=20141126140134" alt="Bhadra" class="character-image">
+                <div class="character-info">
+                    <h3 class="character-name">Bhadra</h3>
+                    <div class="character-role">The Reincarnated Goddess</div>
+                    <p class="character-description">A young girl believed to be the reincarnation of the goddess Tarun Matara. Caught between the warring factions, Bhadra represents the spiritual heart of Kyrat and the innocence threatened by endless conflict.</p>
+                </div>
+            </div>
+
+            <!-- Hurk -->
+            <div class="character-card fade-in">
+                <span class="character-faction faction-neutral">Mercenary</span>
+                <img src="https://static.wikia.nocookie.net/farcry/images/3/37/Fc4-hurk.jpg/revision/latest/scale-to-width/360?cb=20141030164716" alt="Hurk" class="character-image">
+                <div class="character-info">
+                    <h3 class="character-name">Hurk Drubman Jr.</h3>
+                    <div class="character-role">American Mercenary • Comic Relief</div>
+                    <p class="character-description">A bombastic American expatriate and weapons dealer who provides comic relief amidst the war-torn landscape. Despite his lack of cultural sensitivity, Hurk's heart is in the right place as he aids Ajay with heavy weapons and explosives.</p>
+                </div>
+            </div>
+
+            <!-- Yuma Lau -->
+            <div class="character-card fade-in">
+                <span class="character-faction faction-royal">Royal Guard</span>
+                <img src="https://static.wikia.nocookie.net/farcry/images/c/c9/Yuma.jpg/revision/latest/scale-to-width-down/318?cb=20141108061349" alt="Yuma Lau" class="character-image">
+                <div class="character-info">
+                    <h3 class="character-name">Yuma Lau</h3>
+                    <div class="character-role">General of the Royal Guard</div>
+                    <p class="character-description">Pagan Min's ruthless second-in-command and childhood friend. A master interrogator and military strategist, Yuma runs the dreaded Durgesh Prison and oversees the Royal Guard's brutal operations across Kyrat.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story-section" id="story">
+        <div class="story-container">
+            <div class="story-content fade-in">
+                <h2>The Story of Kyrat</h2>
+                <p class="story-text">
+                    Hidden in the majestic peaks of the Himalayas lies <span class="story-highlight">Kyrat</span>, a country steeped in tradition and violence. Once a peaceful nation, Kyrat has been plunged into civil war under the rule of <span class="story-highlight">Pagan Min</span>, a despotic king who combines ancient brutality with modern firepower.
+                </p>
+                <p class="story-text">
+                    As <span class="story-highlight">Ajay Ghale</span>, you return to your birthplace to honor your mother's final wish, only to be caught in the middle of a rebellion. The <span class="story-highlight">Golden Path</span>, led by the conflicting ideologies of Amita and Sabal, fights to overthrow the regime while ancient myths of <span class="story-highlight">Shangri-La</span> whisper beneath the surface.
+                </p>
+                <p class="story-text">
+                    Every choice you make will shape the future of Kyrat. Will you preserve tradition or embrace progress? Will you show mercy or rule with an iron fist? In Kyrat, every second is a story, and every story ends in blood.
+                </p>
+            </div>
+            <div class="story-image fade-in">
+                <img src="https://www.telegraph.co.uk/multimedia/archive/03088/FC4_Chorten_Vista_3088751k.jpg?imwidth=680" alt="Kyrat Mountains">
+            </div>
+        </div>
+    </section>
+
+    <!-- Weapons Section -->
+    <section class="weapons-section" id="weapons">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Arsenal of War</h2>
+            <p class="section-subtitle">Tools of liberation or oppression</p>
+        </div>
+
+        <div class="weapons-grid">
+            <div class="weapon-card fade-in">
+                <div class="weapon-icon">🔫</div>
+                <h3 class="weapon-name">AK-47</h3>
+                <p>The reliable workhorse of the Golden Path rebellion. This 7.62mm assault rifle delivers consistent damage and reliability in the harsh Himalayan conditions.</p>
+                <div class="weapon-stats">
+                    <div class="weapon-stat">
+                        <div>Damage</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 75%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Accuracy</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 60%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Rate</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 70%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weapon-card fade-in">
+                <div class="weapon-icon">🏹</div>
+                <h3 class="weapon-name">Recurve Bow</h3>
+                <p>Silent and deadly, the traditional weapon of Kyrat's hunters. Perfect for stealth operations and hunting wildlife without alerting enemies.</p>
+                <div class="weapon-stats">
+                    <div class="weapon-stat">
+                        <div>Damage</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 90%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Stealth</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 100%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Range</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 65%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weapon-card fade-in">
+                <div class="weapon-icon">🚁</div>
+                <h3 class="weapon-name">Buzzard Helicopter</h3>
+                <p>Dominating the skies of Kyrat, this armed helicopter provides devastating air support and rapid transport across the treacherous mountain terrain.</p>
+                <div class="weapon-stats">
+                    <div class="weapon-stat">
+                        <div>Firepower</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 95%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Speed</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 80%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Armor</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 60%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weapon-card fade-in">
+                <div class="weapon-icon">🐅</div>
+                <h3 class="weapon-name">Bengal Tiger</h3>
+                <p>Kyrat's apex predator can be unleashed upon your enemies. These magnificent beasts strike terror into the hearts of Pagan Min's forces.</p>
+                <div class="weapon-stats">
+                    <div class="weapon-stat">
+                        <div>Lethality</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 100%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Speed</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 95%"></div></div>
+                    </div>
+                    <div class="weapon-stat">
+                        <div>Stealth</div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 85%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Kyrat in Pictures</h2>
+            <p class="section-subtitle">The beauty and brutality of the Himalayas</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item fade-in">
+                <img src="https://sm.ign.com/t/ign_in/video/h/hunting-a-bengal-tiger-in-far-cry-4-ign-plays/hunting-a-bengal-tiger-in-far-cry-4-ign-plays_gw6g.1280.jpg" alt="Bengal Tiger">
+                <div class="gallery-overlay">
+                    <span>Wildlife of Kyrat</span>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <img src="https://static.wikia.nocookie.net/farcry/images/6/67/Shangrila.jpg/revision/latest?cb=20161002222827" alt="Shangri-La">
+                <div class="gallery-overlay">
+                    <span>Shangri-La</span>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <img src="https://static.wikia.nocookie.net/farcry/images/f/f3/Tx_goldenpath.png/revision/latest?cb=20240607231002" alt="Golden Path">
+                <div class="gallery-overlay">
+                    <span>The Rebellion</span>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <img src="https://d.ibtimes.co.uk/en/full/1411734/far-cry-4.jpg?w=736&f=9385884720a49cb3ca27c20ed4185b97" alt="Combat">
+                <div class="gallery-overlay">
+                    <span>Guerrilla Warfare</span>
+                </div>
+            </div>
+            <div class="gallery-item fade-in">
+                <img src="https://static.wikia.nocookie.net/farcry/images/f/f4/WhatsApp_Image_2019-12-07_at_5.17.18_PM.jpeg/revision/latest/scale-to-width-down/250?cb=20191212160541" alt="Shangri-La Landscape">
+                <div class="gallery-overlay">
+                    <span>Mystical Valley</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Buy Section -->
+    <section class="buy-section" id="buy">
+        <h2 class="buy-title fade-in">Join the Revolution</h2>
+        <p class="section-subtitle fade-in" style="margin-bottom: 40px;">Available on all major platforms</p>
+        
+        <div class="platforms fade-in">
+            <div class="platform">PlayStation 4</div>
+            <div class="platform">Xbox One</div>
+            <div class="platform">PC</div>
+            <div class="platform">PlayStation 3</div>
+            <div class="platform">Xbox 360</div>
+        </div>
+
+        <a href="#" class="buy-button fade-in">Buy Now</a>
+        
+        <p style="margin-top: 40px; opacity: 0.6; font-size: 0.9rem;">
+            © 2014 Ubisoft Entertainment. All Rights Reserved. Far Cry, Ubisoft, and the Ubisoft logo are trademarks of Ubisoft Entertainment in the US and/or other countries.
+        </p>
+    </section>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+                navbar.style.padding = '15px 50px';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 10, 0.8)';
+                navbar.style.padding = '20px 50px';
+            }
+        });
+
+        // Intersection Observer for Fade-in Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Animate stat bars if present
+                    const statFills = entry.target.querySelectorAll('.stat-fill');
+                    statFills.forEach(fill => {
+                        const width = fill.style.width;
+                        fill.style.width = '0';
+                        setTimeout(() => {
+                            fill.style.width = width;
+                        }, 200);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Parallax Effect for Hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            const mountains = document.querySelector('.mountains');
+            
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+            if (mountains) {
+                mountains.style.transform = `translateY(${scrolled * 0.2}px)`;
+            }
+        });
+
+        // Mouse Move Effect for Character Cards
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+
+        // Dynamic Weapon Stats Animation
+        const weaponObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const fills = entry.target.querySelectorAll('.stat-fill');
+                    fills.forEach((fill, index) => {
+                        const targetWidth = fill.style.width;
+                        fill.style.width = '0';
+                        setTimeout(() => {
+                            fill.style.width = targetWidth;
+                        }, index * 100);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.weapon-card').forEach(card => {
+            weaponObserver.observe(card);
+        });
+
+        // Easter Egg: Konami Code
+        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    activateEasterEgg();
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        function activateEasterEgg() {
+            document.body.style.filter = 'hue-rotate(180deg)';
+            setTimeout(() => {
+                document.body.style.filter = 'none';
+                alert('🐯 The Tigers of Kyrat salute you, Ajay!');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
